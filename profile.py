@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 """CloudLab profile for the K2 throughput/latency experiment, parameterized
 by hardware type so the same profile can be instantiated against any of the
 node types this repo has configs for (see ../7_throughput_latency/).
 
-NOT YET VALIDATED end-to-end on CloudLab for the new node types — there is
+NOT YET VALIDATED end-to-end on CloudLab for the new node types -- there is
 no API access available from the environment this was written in to
 instantiate or test a profile. The xl170 path below uses the *exact* disk
 image URNs from a real working `xl170-centos7-ubuntu20` instance's request
