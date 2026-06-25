@@ -1,32 +1,19 @@
-# TEMPLATE — not yet validated on real c8220 hardware.
-#
-# c8220 (Clemson): dual Intel Xeon E5-2660v2 "Ivy Bridge" (2013), 20 physical
-# cores / 40 threads total, Intel X520 10Gb NICs (ixgbe driver — no --mlx*-so
-# flag needed, t-rex-64 auto-detects this).
-#
-# TODO before first use:
-#   1. Allocate the node, then on node-1 run: lspci | grep -i ethernet
-#      Replace the two PCI bus IDs below with the real ones for the X520 ports
-#      you intend to use for the trex traffic-generator link.
-#   2. This defaults to the d6515 dual-real-port pattern (two distinct PCI
-#      devices, one IP per port). If lspci shows c8220 only exposes one usable
-#      10Gb port for this experiment, switch to the xl170 single-port pattern
-#      instead (one real interface + "dummy") and use
-#      udp_for_benchmarks_xl170.py's same-IP convention rather than this
-#      template's different-IP one.
-#   3. Tune `threads` below to the real core count once confirmed via
-#      `lscpu` — this defaults conservatively to leave cores free for the
-#      OS/management, not maximal throughput.
+# c8220 (Clemson) -- validated 2026-06-25 on clnode060/clnode066.
+# Intel Xeon E5-2660v2 "Ivy Bridge" (2013), Intel X520 10Gb NIC (ixgbe).
+# Single-port mode: one real 10GbE port (82:00.0 = enp130s0f0) + dummy,
+# matching the xl170 topology (one CloudLab link, same-IP traffic pattern).
+# NIC is on NUMA node 1; threads are assigned to NUMA-1 CPUs (10-19, 30-39).
+# node-1 lscpu: 2 sockets x 10 cores x 2 threads = 40 CPUs total.
 - version: 2
-  interfaces: ["PCI_BUS_ID_PORT0", "PCI_BUS_ID_PORT1"]
+  interfaces: ["82:00.0", "dummy"]
   port_info:
     - ip: 10.10.1.2
       default_gw: 10.10.1.1
     - ip: 10.10.2.2
       default_gw: 10.10.2.1
   platform:
-    master_thread_id: 0
-    latency_thread_id: 19
+    master_thread_id: 10
+    latency_thread_id: 11
     dual_if:
-      - socket: 0
-        threads: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+      - socket: 1
+        threads: [12,13,14,15,16,17,18,19,30,31,32,33,34,35,36,37,38,39]
