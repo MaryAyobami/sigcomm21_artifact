@@ -52,7 +52,7 @@ None of these required changes to `mlffr.py`, `mlffr_user.py`,
   `/usr/local/trex-configuration/`: `scripts/`, `scripts-user/`,
   `visualize-data-scripts/`, and the per-node-type
   `trex_cfg_*.yaml`/`udp_for_benchmarks_*.py`.
-- `../profile/profile.py` — CloudLab geni-lib profile with a hardware-type
+- `../profile.py` — CloudLab geni-lib profile with a hardware-type
   dropdown, replacing the fixed `xl170-centos7-ubuntu20` portal profile.
 
 ## Node types
