@@ -46,7 +46,7 @@ fi
 if [[ ! -d /usr/local/v2.87 ]]; then
     echo "== Downloading T-Rex v${TREX_VERSION} =="
     cd /tmp
-    wget -O "v${TREX_VERSION}.tar.gz" "$TREX_URL"
+    wget --no-check-certificate -O "v${TREX_VERSION}.tar.gz" "$TREX_URL"
     sudo mkdir -p /usr/local
     sudo tar -xzf "v${TREX_VERSION}.tar.gz" -C /usr/local
 else
