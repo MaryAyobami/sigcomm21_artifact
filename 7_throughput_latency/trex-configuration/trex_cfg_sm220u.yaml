@@ -1,0 +1,29 @@
+# TEMPLATE — not yet validated on real sm220u hardware.
+#
+# sm220u: Intel "Ice Lake" Xeon (~2021), Mellanox ConnectX-5 100Gb
+# (mlx5 driver — t-rex-64 auto-detects this and adds --mlx5-so itself).
+#
+# TODO before first use:
+#   1. Allocate the node, then on node-1 run: lspci | grep -i mellanox
+#      Replace the two PCI bus IDs below with the real ones.
+#   2. This defaults to the d6515 dual-real-port pattern. If lspci shows
+#      only one usable port for this experiment, switch to the xl170
+#      single-port pattern (one real interface + "dummy") and use
+#      udp_for_benchmarks_xl170.py's same-IP convention instead.
+#   3. Tune `threads` below to the real core count (lscpu) — this is a
+#      placeholder, not tuned for this CPU's actual core count.
+#   4. Confirm MLNX_OFED version compatibility for this NIC generation
+#      before relying on install_trex.sh's Mellanox branch as-is.
+- version: 2
+  interfaces: ["PCI_BUS_ID_PORT0", "PCI_BUS_ID_PORT1"]
+  port_info:
+    - ip: 10.10.1.2
+      default_gw: 10.10.1.1
+    - ip: 10.10.2.2
+      default_gw: 10.10.2.1
+  platform:
+    master_thread_id: 0
+    latency_thread_id: 31
+    dual_if:
+      - socket: 0
+        threads: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
