@@ -28,7 +28,7 @@ echo "== Installing OS build dependencies =="
 sudo apt-get update -y
 sudo apt-get install -y build-essential python3 python3-pip wget tar pkg-config \
     linux-headers-"$(uname -r)" dkms
-sudo pip3 install numpy
+sudo pip3 install numpy pandas
 
 if $is_mellanox; then
     echo "== Node type '$NODE_TYPE' uses a Mellanox NIC: installing MLNX_OFED =="
