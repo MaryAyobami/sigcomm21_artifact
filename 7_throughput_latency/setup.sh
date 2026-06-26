@@ -6,6 +6,7 @@
 # 7.2 (the ~/.bash_profile PYTHONPATH edit, plus what update-scripts.sh did
 # by hand): copy the right per-node-type config files into place, write
 # node0.config, and copy the (fixed) mlffr/run_mlffr scripts into v2.87/.
+# Also installs all trex-configuration scripts locally and on node-0.
 #
 # Usage: ./setup.sh <node-type> <dut-user@dut-host>
 #   node-type: one of xl170, d6515, c8220, sm220u, d7615
@@ -19,6 +20,7 @@ DUT="${2:?Usage: $0 <node-type> <dut-user@dut-host>}"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TC="$REPO_DIR/trex-configuration"
 V287_LIVE=/usr/local/v2.87
+TC_LIVE=/usr/local/trex-configuration
 
 valid_types=(xl170 d6515 c8220 sm220u d7615)
 if [[ ! " ${valid_types[*]} " =~ " ${NODE_TYPE} " ]]; then
@@ -45,6 +47,24 @@ sudo cp "$REPO_DIR/v2.87-scripts/mlffr.py" "$V287_LIVE/"
 sudo cp "$REPO_DIR/v2.87-scripts/run_mlffr.py" "$V287_LIVE/"
 sudo cp "$REPO_DIR/v2.87-scripts/mlffr_user.py" "$V287_LIVE/"
 sudo cp "$REPO_DIR/v2.87-scripts/run_mlffr_user.py" "$V287_LIVE/"
+
+echo "== Installing trex-configuration scripts locally (node-1) =="
+sudo mkdir -p "$TC_LIVE/scripts" "$TC_LIVE/scripts-user" "$TC_LIVE/visualize-data-scripts"
+sudo cp -r "$TC/scripts/."               "$TC_LIVE/scripts/"
+sudo cp -r "$TC/scripts-user/."          "$TC_LIVE/scripts-user/"
+sudo cp -r "$TC/visualize-data-scripts/." "$TC_LIVE/visualize-data-scripts/"
+echo "$NODE_TYPE" | sudo tee "$TC_LIVE/scripts/device.config" > /dev/null
+
+echo "== Installing trex-configuration scripts on node-0 ($DUT) =="
+# tar-pipe: avoids needing passwordless sudo on the remote for scp directly
+# to /usr/local. Unpacks into a temp dir, then sudo-copies to TC_LIVE.
+ssh "$DUT" "sudo mkdir -p $TC_LIVE/scripts $TC_LIVE/scripts-user"
+tar -czf - -C "$TC" scripts scripts-user \
+    | ssh "$DUT" "cd /tmp && tar -xzf - \
+        && sudo cp -r /tmp/scripts/.       $TC_LIVE/scripts/ \
+        && sudo cp -r /tmp/scripts-user/.  $TC_LIVE/scripts-user/ \
+        && rm -rf /tmp/scripts /tmp/scripts-user"
+ssh "$DUT" "echo '$NODE_TYPE' | sudo tee $TC_LIVE/scripts/device.config > /dev/null"
 
 # Fix #2: README section 2.1 requires this PYTHONPATH for mlffr.py's
 # top-level `from trex_stl_lib.api import *` to resolve. It's easy to
