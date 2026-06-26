@@ -1,0 +1,63 @@
+c8220 Benchmark Commands
+========================
+Nodes: node-0 = clnode060.clemson.cloudlab.us
+       node-1 = clnode066.clemson.cloudlab.us
+
+
+=== WARMUP 1: xdp_fwd (forwards packets) ===
+
+-- Run (on node-1) --
+cd /usr/local/v2.87
+python3 -u run_mlffr.py -b xdp_fwd -v o1 -d xdp_fwd_warmup -n 1 -c 6
+
+-- Generate graphs (on node-1, after run completes) --
+cd /usr/local/trex-configuration/visualize-data-scripts/
+python3 rx_plot.py -d ~/xdp_fwd_warmup -v o1 -b xdp_fwd -r 0
+python3 latency.py -d ~/xdp_fwd_warmup -type avg -v o1 -b xdp_fwd
+
+-- Copy graphs to local machine --
+scp Mary@clnode066.clemson.cloudlab.us:~/xdp_fwd_warmup/rx/0.png        ./xdp_fwd_warmup_throughput.png
+scp Mary@clnode066.clemson.cloudlab.us:~/xdp_fwd_warmup/o1_avgL.png     ./xdp_fwd_warmup_latency.png
+
+
+=== WARMUP 2: xdp_map_access (drops all packets) ===
+
+-- Run (on node-1) --
+cd /usr/local/v2.87
+python3 -u run_mlffr_user.py -b xdp_map_access -v o1 -d xdp_map_warmup -n 1 -c 6
+
+-- Generate graphs (on node-0, after run completes -- results land there) --
+ssh Mary@clnode060.clemson.cloudlab.us
+cd /usr/local/trex-configuration/visualize-data-scripts/
+python3 generate_user_graphs.py -d ~/xdp_map_warmup -v o1 -b xdp_map_access -r 0
+
+-- Copy graphs to local machine --
+scp Mary@clnode060.clemson.cloudlab.us:~/xdp_map_warmup/rx/0.png        ./xdp_map_warmup_throughput.png
+
+
+=== FULL EVALUATION (section 7.4) -- run after both warmups succeed ===
+
+-- xdp_fwd full run (on node-1, ~3-4 hours) --
+cd /usr/local/v2.87
+nohup python3 -u run_mlffr.py -b xdp_fwd -d xdp_fwd_all -n 3 -c 6 > ~/xdp_fwd_all.log 2>&1 &
+tail -f ~/xdp_fwd_all.log
+
+-- xdp_fwd graphs (on node-1, after run completes) --
+cd /usr/local/trex-configuration/visualize-data-scripts/
+python3 rx_plot.py -d ~/xdp_fwd_all -b xdp_fwd -r 0
+python3 latency.py -d ~/xdp_fwd_all -type avg -b xdp_fwd
+
+-- xdp_map_access full run (on node-1, ~3-4 hours) --
+cd /usr/local/v2.87
+nohup python3 -u run_mlffr_user.py -b xdp_map_access -d xdp_map_all -n 3 -c 6 > ~/xdp_map_all.log 2>&1 &
+tail -f ~/xdp_map_all.log
+
+-- xdp_map_access graphs (on node-0, after run completes) --
+ssh Mary@clnode060.clemson.cloudlab.us
+cd /usr/local/trex-configuration/visualize-data-scripts/
+python3 generate_user_graphs.py -d ~/xdp_map_all -b xdp_map_access -r 0
+
+-- Copy all full-eval graphs to local machine --
+scp Mary@clnode066.clemson.cloudlab.us:~/xdp_fwd_all/rx/0.png           ./xdp_fwd_all_throughput.png
+scp Mary@clnode066.clemson.cloudlab.us:~/xdp_fwd_all/*_avgL.png         .
+scp Mary@clnode060.clemson.cloudlab.us:~/xdp_map_all/rx/0.png           ./xdp_map_all_throughput.png
