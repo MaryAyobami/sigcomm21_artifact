@@ -12,6 +12,10 @@ python3 -u run_mlffr.py -b xdp_fwd -v o1 -d xdp_fwd_warmup -n 1 -c 6
 
 -- Generate graphs (on node-1, after run completes) --
 cd /usr/local/trex-configuration/visualize-data-scripts/
+
+or
+
+cd /tmp/sigcomm21_artifact/7_throughput_latency/trex-configuration/visualize-data-scripts
 python3 rx_plot.py -d ~/xdp_fwd_warmup -v o1 -b xdp_fwd -r 0
 python3 latency.py -d ~/xdp_fwd_warmup -type avg -v o1 -b xdp_fwd
 
