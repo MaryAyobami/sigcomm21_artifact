@@ -12,7 +12,7 @@ class STLS1(object):
     def create_stream (self, packet_len, stream_count):
         packets = []
         for i in range(stream_count):
-            base_pkt = Ether()/IP(src="10.10.1.2",dst="10.10.1.2")/UDP(dport=12+i,sport=1025)
+            base_pkt = Ether(dst="00:8c:fa:5b:11:90")/IP(src="10.10.1.2",dst="10.10.1.2")/UDP(dport=12+i,sport=1025)
             base_pkt_len = len(base_pkt)
             base_pkt /= 'x' * max(0, packet_len - base_pkt_len)
             packets.append(STLStream(
