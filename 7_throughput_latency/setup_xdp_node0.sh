@@ -134,12 +134,14 @@ fi
 # ── K2 placeholder variants ─────────────────────────────────────────────────
 # Real K2 variants require the K2 superoptimizer (hours to build/run).
 # These O2 copies let the benchmark framework complete without errors.
+# run_mlffr.py's hardcoded versionList = ["o1","o2","k0","k1","k2","k3","k4"]
+# so we need k0-k4 (5 files).
 K2DIR="$TE/completed-programs/kernel_samples_xdp_fwd_kern_xdp_fwd_runtime_debug/top-progs"
 sudo mkdir -p "$K2DIR"
-for i in 0 1 2 3; do
+for i in 0 1 2 3 4; do
     sudo cp "$TE/O2/xdp_fwd_kern.o" "$K2DIR/xdp_fwd_kern${i}.o"
 done
-echo "== K2 placeholders installed (copies of O2) =="
+echo "== K2 placeholders installed (copies of O2, k0-k4) =="
 
 # ── Static ARP entry for T-Rex ─────────────────────────────────────────────
 # T-Rex (DPDK) takes over the NIC and never responds to ARP, so the kernel's
