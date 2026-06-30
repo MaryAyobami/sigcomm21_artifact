@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
+"""
+K2 Reproduction Profile
+"""
 import geni.portal as portal
 import geni.rspec.pg as pg
 
 pc = portal.Context()
 
 NODE_TYPES = [
-    ("xl170",     "xl170     [Utah]    Intel Broadwell E5-2640v4 2016  ConnectX-4 Lx mlx5 25GbE  (validated)"),
-    ("c8220",     "c8220     [Clemson] Intel Ivy Bridge E5-2660v2 2013 X520 ixgbe 10GbE           (validated)"),
+    ("xl170",     "xl170     [Utah]    Intel Broadwell E5-2640v4 2016  ConnectX-4 Lx mlx5 25GbE "),
+    ("c8220",     "c8220     [Clemson] Intel Ivy Bridge E5-2660v2 2013 X520 ixgbe 10GbE "),
     ("c6525-25g", "c6525-25g [Utah]    AMD EPYC Rome 7302P 2019        ConnectX-5 mlx5 25GbE"),
     ("c6420",     "c6420     [Clemson] Intel Skylake-SP Gold 6142 2017 X710 i40e 10GbE"),
-    ("c6620",     "c6620     [Utah]    Intel Emerald Rapids 5512U 2024  E810-XXV ice 25GbE        (needs HWE kernel)"),
+    ("c6620",     "c6620     [Utah]    Intel Emerald Rapids 5512U 2024  E810-XXV ice 25GbE "),
     ("c6320",     "c6320     [Clemson] Intel Haswell E5-2683v3 2014     X520 ixgbe 10GbE"),
     ("r6525",     "r6525     [Clemson] AMD EPYC Milan 7543 2021         ConnectX-5 mlx5 25GbE"),
-    ("d6515",     "d6515     [Utah]    AMD EPYC Rome 7452 2019          ConnectX-5 mlx5 100GbE    (validated)"),
+    ("d6515",     "d6515     [Utah]    AMD EPYC Rome 7452 2019          ConnectX-5 mlx5 100GbE "),
     ("sm220u",    "sm220u    [Wisc]    Intel Ice Lake Silver 4314 2021  ConnectX-6 mlx5 100GbE"),
     ("d7615",     "d7615     [Clemson] AMD EPYC Genoa 9354P 2023        ConnectX-6 Lx mlx5 25GbE"),
 ]
