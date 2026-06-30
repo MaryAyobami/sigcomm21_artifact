@@ -8,11 +8,19 @@ import geni.rspec.pg as pg
 pc = portal.Context()
 
 NODE_TYPES = [
-    ("xl170", "xl170 -- Intel Broadwell-EP, 2016 (Mellanox ConnectX-4)"),
-    ("d6515", "d6515 -- AMD EPYC Rome, 2019 (Mellanox ConnectX-5)"),
-    ("c8220", "c8220 -- Intel Ivy Bridge, 2013 (Intel X520/ixgbe)"),
-    ("sm220u", "sm220u -- Intel Ice Lake, ~2021 (Mellanox ConnectX-5)"),
-    ("d7615", "d7615 -- AMD EPYC Genoa, 2023 (Mellanox ConnectX-6 Lx)"),
+    # ── Already benchmarked ──────────────────────────────────────────────────
+    ("xl170",     "xl170     [Utah]    Intel Broadwell E5-2640v4, 2016  -- ConnectX-4 Lx mlx5  25GbE"),
+    ("c8220",     "c8220     [Clemson] Intel Ivy Bridge E5-2660v2, 2013 -- X520 ixgbe          10GbE"),
+    # ── Priority additions (hardware-generalization study) ───────────────────
+    ("c6525-25g", "c6525-25g [Utah]    AMD EPYC Rome 7302P, 2019        -- ConnectX-5 mlx5    25GbE  ★ AMD/Zen2"),
+    ("c6420",     "c6420     [Clemson] Intel Skylake-SP Gold 6142, 2017 -- X710 i40e          10GbE  ★ i40e NIC"),
+    ("c6620",     "c6620     [Utah]    Intel Emerald Rapids 5512U, 2024 -- E810-XXV ice       25GbE  ★ newest; needs HWE kernel"),
+    ("c6320",     "c6320     [Clemson] Intel Haswell E5-2683v3, 2014    -- X520 ixgbe         10GbE  ★ clean Intel ladder"),
+    ("r6525",     "r6525     [Clemson] AMD EPYC Milan 7543, 2021        -- ConnectX-5 mlx5   25GbE  ★ AMD/Zen3"),
+    # ── Other node types (pre-existing, not yet benchmarked) ─────────────────
+    ("d6515",     "d6515     [Utah]    AMD EPYC Rome 7452, 2019         -- ConnectX-5 mlx5   100GbE"),
+    ("sm220u",    "sm220u    [Wisc]    Intel Ice Lake Silver 4314, 2021 -- ConnectX-6 mlx5   100GbE"),
+    ("d7615",     "d7615     [Clemson] AMD EPYC Genoa 9354P, 2023       -- ConnectX-6 Lx mlx5 25GbE"),
 ]
 
 pc.defineParameter(
@@ -22,9 +30,14 @@ pc.defineParameter(
     "xl170",
     NODE_TYPES,
     longDescription="Which CloudLab hardware type to allocate for BOTH node-0 "
-                     "(DUT) and node-1 (traffic generator). Only xl170 uses a "
-                     "confirmed-working pre-baked image; everything else "
-                     "installs T-Rex fresh on a stock Ubuntu image.",
+                     "(DUT) and node-1 (traffic generator). "
+                     "Site guidance: xl170/c6525-25g/c6620/d6515 are Utah; "
+                     "c8220/c6420/c6320/r6525/d7615 are Clemson; sm220u is Wisconsin. "
+                     "Only xl170 uses a confirmed pre-baked image; all others use "
+                     "stock Ubuntu 20.04 and install T-Rex on first boot. "
+                     "c6620 EXCEPTION: the E810 ice NIC driver requires the HWE "
+                     "kernel (5.15); after boot run: "
+                     "sudo apt-get install -y linux-image-generic-hwe-20.04 && sudo reboot",
 )
 
 pc.defineParameter(
