@@ -86,11 +86,11 @@ else
     cat /tmp/xdp_fwd_build.log; exit 1
 fi
 
-# k0-k4 are O2 placeholders; run_mlffr.py hardcodes versionList including k4.
 K2DIR="$TE/completed-programs/kernel_samples_xdp_fwd_kern_xdp_fwd_runtime_debug/top-progs"
+K2SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/k2-objects"
 sudo mkdir -p "$K2DIR"
 for i in 0 1 2 3 4; do
-    sudo cp "$TE/O2/xdp_fwd_kern.o" "$K2DIR/xdp_fwd_kern${i}.o"
+    sudo cp "$K2SRC/xdp_fwd_kern${i}.o" "$K2DIR/xdp_fwd_kern${i}.o"
 done
 
 # T-Rex (DPDK) never responds to ARP, so bpf_fib_lookup returns NO_NEIGH
